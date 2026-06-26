@@ -4,7 +4,7 @@ import * as z from "zod";
 
 export const listFiles = tool(
     async ({}, config) => {
-        const writer = config.writer;
+        const writer = config.context?.writer || (() => {});
 
         writer("Listing files in project directory...\n");
 
@@ -30,8 +30,8 @@ export const listFiles = tool(
 );
 
 export const readFiles = tool(
-    async ({ files }, config) => {   // <-- BUG FIX
-        const writer = config.writer;
+    async ({ files }, config) => {
+        const writer = config.context?.writer || (() => {});
 
         writer("Reading files...\n");
 
@@ -61,7 +61,7 @@ export const readFiles = tool(
 
 export const updateFiles = tool(
     async ({ files }, config) => {
-        const writer = config.writer;
+        const writer = config.context?.writer || (() => {});
 
         writer("Updating files...\n");
 

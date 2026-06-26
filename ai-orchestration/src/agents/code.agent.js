@@ -2,6 +2,7 @@ import "dotenv/config";
 import { ChatOpenAI } from "@langchain/openai";
 import { listFiles, readFiles, updateFiles } from "./tools.js";
 import { createAgent } from "langchain";
+
 const model = new ChatOpenAI({
   model: "deepseek/deepseek-chat-v3",
   apiKey: process.env.OPEN_ROUTER_API_KEY,
@@ -16,7 +17,7 @@ const model = new ChatOpenAI({
   maxTokens: 2000,
 });
 
-const agent = (createAgent({
+const agent = createAgent({
   model,
   tools: [listFiles, readFiles, updateFiles],
   systemPrompt: `
@@ -33,7 +34,6 @@ IMPORTANT RULES:
 7. Preserve all existing functionality unless explicitly asked to remove it.
 8. When changing UI, edit the existing files instead of replacing the project.
 `
-
-}))
+});
 
 export default agent;

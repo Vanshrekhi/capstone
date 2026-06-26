@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+/* ── Custom design tokens ── */
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --color-surface:   #0a0a0f;
+  --color-base:      #0f0f1a;
+  --color-panel:     #13131f;
+  --color-elevated:  #1a1a2e;
+  --color-card:      #16162a;
+  --color-hover:     #1e1e35;
+
+  --color-border-dim:    #1e1e35;
+  --color-border-mid:    #252540;
+  --color-border-strong: #30305a;
+
+  --color-ink:       #e8e8ff;
+  --color-ink-dim:   #9090bb;
+  --color-ink-muted: #555580;
+  --color-accent:    #a78bfa;
+
+  --color-violet-ide: #7c3aed;
+  --color-violet-dark: #6d28d9;
+  --color-violet-light: #8b5cf6;
+}
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-base); }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-muted); }
+
+/* ── xterm ── */
+.xterm { height: 100%; }
+.xterm-viewport { overflow-y: auto !important; }
+
+/* ── Keyframe animations (referenced by utility classes below) ── */
+@keyframes orb-float {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(20px,-20px) scale(1.05); }
+  66%  { transform: translate(-15px,10px) scale(0.95); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0); }
+  50%  { transform: translateY(-8px); }
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ── Named animation utilities (used as className strings) ── */
+.animate-orb       { animation: orb-float 8s ease-in-out infinite; }
+.animate-orb-d3    { animation: orb-float 8s ease-in-out infinite -3s; }
+.animate-orb-d6    { animation: orb-float 8s ease-in-out infinite -6s; }
+.animate-fade-up   { animation: fade-up 0.6s ease both; }
+.animate-msg-in    { animation: msg-in 0.2s ease both; }
+.animate-float-bob { animation: float-bob 3s ease-in-out infinite; }
+.animate-blink     { animation: cursor-blink 1s step-end infinite; }
+.animate-badge     { animation: badge-pulse 2s ease infinite; }
+
+/* typing dots – different delays */
+.typing-dot   { width:6px; height:6px; background:#555580; border-radius:9999px; }
+.typing-dot-1 { animation: typing-dot 1.4s ease infinite; }
+.typing-dot-2 { animation: typing-dot 1.4s ease infinite 0.2s; }
+.typing-dot-3 { animation: typing-dot 1.4s ease infinite 0.4s; }
+
+/* gradient text helper */
+.gradient-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

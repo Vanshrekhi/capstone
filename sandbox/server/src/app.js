@@ -1,5 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
+import cors from 'cors';
 import { createPod } from './kubernetes/pod.js';
 import { createService } from './kubernetes/service.js';
 import { v7 as uuid } from "uuid"
@@ -7,6 +8,10 @@ import { v7 as uuid } from "uuid"
 const app = express();
 
 app.use(morgan('dev'))
+app.use(cors({
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS", "PUT"],
+    origin: "*",
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
