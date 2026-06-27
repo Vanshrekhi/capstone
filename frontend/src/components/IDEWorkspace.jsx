@@ -53,7 +53,7 @@ export default function IDEWorkspace({ sandbox }) {
 
       {/* ── Main body (3 Columns) ── */}
       <div className="flex flex-1 overflow-hidden min-h-0">
-        
+
         {/* Left column: File Explorer */}
         <aside className="w-[250px] flex-shrink-0 border-r border-[#1e1e35] bg-[#0f0f1a] overflow-hidden flex flex-col">
           <FileExplorer sandbox={sandbox} onFileSelect={handleFileSelect} selectedFile={selectedFile} />

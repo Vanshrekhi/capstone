@@ -4,8 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import { Server } from "socket.io";
 import http from 'http';
-import { exec } from 'child_process';
 import cors from 'cors';
+import os from 'os';
+import pty from 'node-pty';
 
 const WORKING_DIR = '/workspace';
 
@@ -45,50 +46,37 @@ app.get('/', (req, res) => {
     });
 });
 
-const socketCommandMap = new Map();
+// Determine the default shell for the OS
+const shell = os.platform() === 'win32' ? 'powershell.exe' : 'sh'; 
 
 io.on("connection", (socket) => {
     console.log(`✅ Client connected: ${socket.id}`);
     
-    // Send welcome message
-    socket.emit('terminal-output', `Connected to terminal at ${WORKING_DIR}\r\n`);
+    // Spawn a true pseudo-terminal process for this connection
+    const ptyProcess = pty.spawn(shell, [], {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 24,
+        cwd: WORKING_DIR,
+        env: process.env
+    });
 
+    // Send welcome message through the PTY
+    ptyProcess.write('echo "Connected to terminal at ' + WORKING_DIR + '"\r');
+
+    // Stream terminal output directly to the frontend
+    ptyProcess.onData((data) => {
+        socket.emit('terminal-output', data);
+    });
+
+    // Pipe frontend keystrokes directly into the terminal
     socket.on("terminal-input", (data) => {
-        console.log(`[${socket.id}] Input received: ${data}`);
-        
-        // Remove newline if present
-        const command = data.trim();
-        
-        if (!command) {
-            return;
-        }
-
-        // Execute command in the working directory
-        exec(command, { cwd: WORKING_DIR, maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
-            // Send stdout
-            if (stdout) {
-                console.log(`[${socket.id}] Output: ${stdout.substring(0, 100)}`);
-                socket.emit('terminal-output', stdout);
-            }
-
-            // Send stderr if any
-            if (stderr) {
-                console.log(`[${socket.id}] Error: ${stderr.substring(0, 100)}`);
-                socket.emit('terminal-output', stderr);
-            }
-
-            // Send command prompt
-            socket.emit('terminal-output', `\r\n$ `);
-
-            if (error) {
-                console.error(`[${socket.id}] Command error:`, error.message);
-            }
-        });
+        ptyProcess.write(data);
     });
 
     socket.on("disconnect", () => {
         console.log(`❌ Client disconnected: ${socket.id}`);
-        socketCommandMap.delete(socket.id);
+        ptyProcess.kill(); // Clean up the shell process when the user leaves
     });
 });
 

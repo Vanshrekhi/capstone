@@ -1,21 +1,14 @@
 import "dotenv/config";
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatMistralAI } from "@langchain/mistralai"
 import { listFiles, readFiles, updateFiles } from "./tools.js";
 import { createAgent } from "langchain";
 
-const model = new ChatOpenAI({
-  model: "deepseek/deepseek-chat-v3",
-  apiKey: process.env.OPEN_ROUTER_API_KEY,
+const model = new ChatMistralAI({
+    model: "mistral-large-latest",
+    apiKey: process.env.MISTRAL_API_KEY,
+    "temperature": 0.7,
+})
 
-  configuration: {
-    baseURL: "https://openrouter.ai/api/v1",
-  },
-
-  temperature: 0.2,
-
-  // IMPORTANT
-  maxTokens: 2000,
-});
 
 const agent = createAgent({
   model,

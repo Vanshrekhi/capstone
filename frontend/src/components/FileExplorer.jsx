@@ -82,7 +82,7 @@ export default function FileExplorer({ sandbox, onFileSelect, selectedFile }) {
         });
         setTree(t);
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   };
 
@@ -98,7 +98,7 @@ export default function FileExplorer({ sandbox, onFileSelect, selectedFile }) {
           <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
         </svg>
         <span className="flex-1">Explorer</span>
-        <button 
+        <button
           onClick={fetchFiles}
           disabled={loading}
           className={`p-1 rounded text-[#9090bb] hover:text-[#e8e8ff] hover:bg-[#1e1e35] transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
